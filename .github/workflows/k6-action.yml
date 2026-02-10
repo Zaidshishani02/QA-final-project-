@@ -1,0 +1,35 @@
+#K6 TEST
+name: Performance Tests - K6
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  k6-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+      uses: actions/checkout@v4
+
+      -name: Setup k6
+      uses: grafana/setup-k6-action@v1
+
+      
+      -name: Run k6 smoke test
+      run: k6 run "04-Performance-Testing (K6)/SmokeTest.js"
+      env:
+        TEST_TYPE: smoke
+        BASE_URL: https://dummyjson.com/
+
+      
+      -name: Run k6 load test
+      run: k6 run "04-Performance-Testing (K6)/LoadTest.js"
+      env:
+        TEST_TYPE: load
+        BASE_URL: https://dummyjson.com/
+        SLEEP_SECONDS: "1"
