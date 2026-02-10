@@ -22,20 +22,18 @@ npm install -g newman-reporter-htmlextra
 
 Run collection:
 
-newman run DummyJSON_API_QA_Portfolio.postman_collection.json ^
-  -e DummyJSON_Env.postman_environment.json ^
-  -r cli,htmlextra,junit ^
-  --reporter-htmlextra-export test-output/newman-report.html ^
-  --reporter-junit-export test-output/newman-report.xml
+newman run "DummyJSON API tests.postman_collection.json" ^
+-e "DummyJSON-Env.postman_environment.json" ^
+-d "productIds.csv" ^
+-r htmlextra ^
+--reporter-htmlextra-export "newman-report.html"
 
 
-Run **data-driven** request set:
 
-newman run DummyJSON_API_QA_Portfolio.postman_collection.json ^
-  -e DummyJSON_Env.postman_environment.json ^
-  -d data/productIds.csv ^
-  -r cli,htmlextra ^
-  --reporter-htmlextra-export test-output/newman-report-data-driven.html
+Run **data driven** request set:
+
+newman run "DummyJSON API tests.postman_collection.json" -e "DummyJSON-Env.postman_environment.json" -d "productIds.csv" -r htmlextra --reporter-htmlextra-export "newman-report.html"
+
 
 
 ## Notes:

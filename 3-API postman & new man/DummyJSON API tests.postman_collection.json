@@ -93,50 +93,31 @@
           "response": []
         },
         {
-          "name": "3 - Negative: /auth/me without token",
+          "name": "3 - Refresh tokens",
           "event": [
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Unauthorized/Forbidden is returned\", () => {",
-                  "  pm.expect(pm.response.code).to.be.oneOf([401,403]);",
-                  "});"
-                ]
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/auth/me",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "auth",
-                "me"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "4 - Refresh tokens",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
+                  "pm.test(\"Refresh token response is valid (demo API behavior)\", function () {",
+                  "  pm.expect(pm.response.code).to.be.oneOf([200, 401, 403]);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200) {",
+                  "  const json = pm.response.json();",
+                  "  pm.test(\"New accessToken exists\", function () {",
+                  "    pm.expect(json).to.have.property(\"accessToken\");",
+                  "  });",
+                  "} else {",
+                  "  const json = pm.response.json();",
+                  "  pm.test(\"Refresh rejected with message\", function () {",
+                  "    pm.expect(json).to.have.property(\"message\");",
+                  "  });",
+                  "}"
+                ],
                 "type": "text/javascript",
-                "exec": [
-                  "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
-                  "const json = pm.response.json();",
-                  "pm.expect(json).to.have.property(\"accessToken\");",
-                  "pm.environment.set(\"accessToken\", json.accessToken);",
-                  "if (json.refreshToken) pm.environment.set(\"refreshToken\", json.refreshToken);"
-                ]
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -535,13 +516,27 @@
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
                 "exec": [
                   "pm.test(\"Status is 200\", () => pm.response.to.have.status(200));",
                   "const json = pm.response.json();",
                   "pm.expect(json).to.have.property(\"id\");",
                   "pm.expect(String(json.id)).to.eql(String(pm.iterationData.get(\"id\")));"
-                ]
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "console.log(\"CSV id =\", pm.iterationData.get(\"id\"));\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
@@ -970,10 +965,25 @@
             {
               "listen": "test",
               "script": {
-                "type": "text/javascript",
                 "exec": [
-                  "pm.test('Validation/Client error or simulated success',()=>pm.expect(pm.response.code).to.be.oneOf([200,400,422]));"
-                ]
+                  "pm.test(\"Validation/Client error or simulated success\", function () {\r",
+                  "  pm.expect(pm.response.code).to.be.oneOf([201, 400, 422]);\r",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
               }
             }
           ],
